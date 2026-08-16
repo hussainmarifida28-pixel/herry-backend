@@ -128,9 +128,12 @@ def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_u
         user_email = current_user.get("email")
         prompt_with_context = f"User Email ({user_email}): {req.prompt}"
 
-        # Gemini Model Call
-        model = genai.GenerativeModel('gemini-2.5-pro')
-        response = model.generate_content(prompt_with_context)
+        # New Google GenAI Client Standard
+        client = genai.Client(api_key=GEMINI_KEY)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt_with_context,
+        )
 
         return {"user": user_email, "response": response.text}
     except Exception as e:
