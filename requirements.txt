@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+starlette
+authlib
+itsdangerous
+python-dotenv
+google-generativeai
+replicate
+requests
+pyjwt
