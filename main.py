@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from tenacity import retry, stop_after_attempt, wait_fixed
-from google import genai
+import google.generativeai as genai
 import replicate
 from authlib.integrations.starlette_client import OAuth
 from starlette.middleware.sessions import SessionMiddleware
