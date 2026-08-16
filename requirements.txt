@@ -8,3 +8,4 @@ google-generativeai
 replicate
 requests
 pyjwt
+tenacity
