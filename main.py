@@ -117,17 +117,17 @@ async def auth_callback(request: Request):
 @app.post("/api/chat")
 def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_user)):
     """Only Logged-in users can access this"""
-    if not gemini_client:
-        raise HTTPException(status_code=500, detail="Gemini API Key is missing.")
-    
+    if not GEMINI_KEY:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY is missing in environment variables.")
+
     try:
         user_email = current_user.get("email")
         prompt_with_context = f"User Email ({user_email}): {req.prompt}"
-        
-        response = gemini_client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt_with_context,
-        )
+
+        # Gemini Model Call
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(prompt_with_context)
+
         return {"user": user_email, "response": response.text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gemini Error: {str(e)}")
