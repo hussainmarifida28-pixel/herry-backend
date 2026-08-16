@@ -22,9 +22,12 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_fida_key")
-ALGORITHM = "HS256"
 
-app = FastAPI(title="Herry AI Secure Backend Services")
+# Gemini Client Initialization
+gemini_client = None
+if GEMINI_KEY:
+    genai.configure(api_key=GEMINI_KEY)
+    gemini_client = genai
 
 # Session Middleware (OAuth handling ke liye required hai)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
