@@ -81,7 +81,7 @@ def safe_replicate_generate(prompt: str):
 @app.get("/login/google")
 async def login_google(request: Request):
     """User ko Google Sign-in page par redirect karta hai"""
-    redirect_uri = request.url_for('auth_callback')
+    redirect_uri = "https://herry-backend-production.up.railway.app/auth/callback"
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @app.get("/auth/callback")
