@@ -129,7 +129,7 @@ def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_u
         prompt_with_context = f"User Email ({user_email}): {req.prompt}"
 
         # Gemini Model Call
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt_with_context)
 
         return {"user": user_email, "response": response.text}
