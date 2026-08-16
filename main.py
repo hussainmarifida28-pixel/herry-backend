@@ -30,7 +30,11 @@ if GEMINI_KEY:
     gemini_client = genai
 
 # Session Middleware (OAuth handling ke liye required hai)
+# FastAPI App Initialization
+app = FastAPI(title="Herry AI Secure Backend Services", version="1.0.0")
 
+# Session Middleware (OAuth handling ke liye required hai)
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 @app.get("/")
 def read_root():
     return {"status": "online", "message": "Herry Backend API is running!"}
