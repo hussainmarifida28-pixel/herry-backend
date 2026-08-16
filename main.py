@@ -22,6 +22,7 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_fida_key")
+ALGORITHM = "HS256"
 
 # Gemini Client Initialization
 gemini_client = None
