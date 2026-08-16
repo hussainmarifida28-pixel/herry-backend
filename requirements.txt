@@ -10,3 +10,6 @@ pydantic
 authlib
 httpx
 itsdangerous
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
