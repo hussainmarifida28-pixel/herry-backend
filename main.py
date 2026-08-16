@@ -120,6 +120,7 @@ async def auth_callback(request: Request):
 
 @app.post("/api/chat")
 def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_user)):
+    """Only Logged-in users can access this"""
     if not GEMINI_KEY:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY is missing in environment variables.")
 
@@ -128,18 +129,26 @@ def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_u
         prompt_with_context = f"User Email ({user_email}): {req.prompt}"
 
         genai.configure(api_key=GEMINI_KEY)
-        
-        # Auto-fetch working generateContent model
-        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        
-        if not available_models:
-            raise HTTPException(status_code=500, detail="No active Gemini model found for this key.")
 
-        active_model_name = available_models[0]
-        model = genai.GenerativeModel(active_model_name)
+        # Active supported models auto-detect
+        valid_models = [
+            m.name for m in genai.list_models() 
+            if 'generateContent' in m.supported_generation_methods
+        ]
+
+        if not valid_models:
+            raise HTTPException(status_code=500, detail="No active model found for this key.")
+
+        # Pick first working model dynamically
+        selected_model = valid_models[0]
+        model = genai.GenerativeModel(selected_model)
         response = model.generate_content(prompt_with_context)
 
-        return {"user": user_email, "active_model": active_model_name, "response": response.text}
+        return {
+            "user": user_email, 
+            "active_model_used": selected_model, 
+            "response": response.text
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gemini Error: {str(e)}")
 
