@@ -10,6 +10,9 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.middleware.sessions import SessionMiddleware
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+security = HTTPBearer()
 
 load_dotenv()
 
@@ -61,17 +64,14 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(request: Request):
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Unauthorized: Login required")
-    token = auth_header.split(" ")[1]
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
-
+        
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2), reraise=True)
 def safe_replicate_generate(prompt: str):
     return replicate.run("black-forest-labs/flux-schnell", input={"prompt": prompt})
