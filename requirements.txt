@@ -7,3 +7,6 @@ tenacity
 python-dotenv
 requests
 pydantic
+authlib
+httpx
+itsdangerous
