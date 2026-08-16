@@ -120,7 +120,6 @@ async def auth_callback(request: Request):
 
 @app.post("/api/chat")
 def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_user)):
-    """Only Logged-in users can access this"""
     if not GEMINI_KEY:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY is missing in environment variables.")
 
@@ -128,12 +127,19 @@ def chat_with_herry(req: ChatRequest, current_user: dict = Depends(get_current_u
         user_email = current_user.get("email")
         prompt_with_context = f"User Email ({user_email}): {req.prompt}"
 
-        # Standard Google Generative AI SDK Call
         genai.configure(api_key=GEMINI_KEY)
-        model = genai.GenerativeModel('gemini-2.5-pro')
+        
+        # Auto-fetch working generateContent model
+        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        
+        if not available_models:
+            raise HTTPException(status_code=500, detail="No active Gemini model found for this key.")
+
+        active_model_name = available_models[0]
+        model = genai.GenerativeModel(active_model_name)
         response = model.generate_content(prompt_with_context)
 
-        return {"user": user_email, "response": response.text}
+        return {"user": user_email, "active_model": active_model_name, "response": response.text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gemini Error: {str(e)}")
 
