@@ -1,11 +1,8 @@
 fastapi
 uvicorn
-starlette
-authlib
-itsdangerous
-python-dotenv
 google-generativeai
 replicate
-requests
-pyjwt
 tenacity
+python-dotenv
+requests
+pydantic
