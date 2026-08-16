@@ -26,6 +26,9 @@ app = FastAPI(title="Herry AI Secure Backend Services")
 # Session Middleware (OAuth handling ke liye required hai)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
+@app.get("/")
+def read_root():
+    return {"status": "online", "message": "Herry Backend API is running!"}
 # OAuth Setup
 oauth = OAuth()
 oauth.register(
